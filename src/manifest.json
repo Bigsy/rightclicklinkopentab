@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Right Click Opens Link New Tab",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Same as 'Right Click Opens Link New Tab Correct Order', that disapeared from the chrome store but now is back",
     "icons": {
         "16": "icons/16.png",
@@ -22,7 +22,6 @@
         "js": [
             "js/content_script.js"
         ],
-        "run_at": "document_start",
         "all_frames": true
     }],
     "permissions": [
