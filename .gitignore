@@ -46,5 +46,8 @@ jspm_packages
 # distribution zips
 dist
 
+# Extension package
+extension.zip
+
 .DS_Store
 /.idea/
