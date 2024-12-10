@@ -40,7 +40,7 @@ describe('Background Script', () => {
         if (info.button == 'left')
           return next(null, settings['link-left-click-prevent-new-tab']);
         else
-          return next(null, settings['link-' + info.button + '-click'] == 'fore');
+          return next(null, settings[`link-${info.button}-click`] == 'fore');
       });
     };
 
@@ -48,6 +48,21 @@ describe('Background Script', () => {
       chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
         return next(null, tabs && tabs[0] ? tabs[0] : null);
       });
+    };
+
+    global.openLink = (info, from, next) => {
+      getActiveTab((err, activeTab) => {
+        shouldTabBeActive(info, (err, isActive) => {
+          const tabParams = {
+            url: info.url,
+            active: isActive,
+            index: activeTab.index + 1,
+            openerTabId: activeTab.id
+          };
+          chrome.tabs.create(tabParams, () => next(true));
+        });
+      });
+      return true;
     };
   });
 
@@ -105,6 +120,31 @@ describe('Background Script', () => {
         expect(tab).toBeNull();
         done();
       });
+    });
+  });
+
+  describe('openLink', () => {
+    it('should open new tab to the right of current tab', (done) => {
+      // Mock active tab
+      const mockActiveTab = { id: 1, index: 5, windowId: 1 };
+      chrome.tabs.query.mockImplementationOnce((queryInfo, callback) => {
+        callback([mockActiveTab]);
+      });
+
+      // Mock shouldTabBeActive
+      chrome.storage.sync.get.mockImplementationOnce((defaults, callback) => {
+        callback({ 'link-right-click': 'back' });
+      });
+
+      // Mock tab creation
+      chrome.tabs.create.mockImplementationOnce((params, callback) => {
+        expect(params.index).toBe(mockActiveTab.index + 1);
+        expect(params.openerTabId).toBe(mockActiveTab.id);
+        callback();
+        done();
+      });
+
+      openLink({ button: 'right', url: 'https://example.com' }, null, () => {});
     });
   });
 });
