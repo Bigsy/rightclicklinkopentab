@@ -3,7 +3,8 @@
 
     var defaultSettings = {
         'link-right-click': 'back',
-        'link-left-click-prevent-new-tab': false
+        'link-left-click-prevent-new-tab': false,
+        'blacklisted-domains': ''
     };
 
     function loadCurrentSettings() {
@@ -18,10 +19,16 @@
                     node = node.getElementsByClassName(settings[key]);
                     if (node && node[0])
                         node[0].selected = true;
-                } else {
+                } else if (key !== 'blacklisted-domains') {
                     node.checked = settings[key];
                 }
             });
+
+            // Handle blacklist textarea separately since it's not a checkbox or select
+            var blacklistNode = document.getElementById('blacklisted-domains');
+            if (blacklistNode) {
+                blacklistNode.value = settings['blacklisted-domains'] || '';
+            }
         });
     };
 
@@ -46,6 +53,16 @@
 
             node.addEventListener('change', getHandler(node instanceof HTMLSelectElement ? 'select' : null));
         });
+
+        // Add event handler for blacklist textarea
+        var blacklistNode = document.getElementById('blacklisted-domains');
+        if (blacklistNode) {
+            blacklistNode.addEventListener('change', function(ev) {
+                var settings = {};
+                settings['blacklisted-domains'] = ev.target.value.trim();
+                chrome.storage.sync.set(settings);
+            });
+        }
     };
 
     document.addEventListener("DOMContentLoaded", function(event) {
