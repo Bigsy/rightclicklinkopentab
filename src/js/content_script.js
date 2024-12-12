@@ -20,7 +20,6 @@ console.log('Content script loaded.');
                 .filter(domain => domain);
             
             const currentDomain = window.location.hostname;
-            console.log('Checking domain:', currentDomain, 'against blacklist:', blacklist); // Debug log
             
             isBlacklisted = blacklist.some(pattern => {
                 if (pattern.startsWith('*')) {
@@ -29,11 +28,9 @@ console.log('Content script loaded.');
                     const match = currentDomain === suffix.replace(/^\./, '') || 
                                 currentDomain.endsWith(suffix) ||
                                 currentDomain.endsWith(suffix.replace(/^\./, ''));
-                    console.log('Wildcard pattern:', pattern, 'suffix:', suffix, 'match:', match); // Debug log
                     return match;
                 }
                 const match = pattern === currentDomain;
-                console.log('Exact pattern:', pattern, 'match:', match); // Debug log
                 return match;
             });
             if (callback) callback(isBlacklisted);
