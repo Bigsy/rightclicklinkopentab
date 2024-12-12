@@ -36,8 +36,6 @@ console.log('Content script loaded.');
                 console.log('Exact pattern:', pattern, 'match:', match); // Debug log
                 return match;
             });
-            
-            console.log('Domain is blacklisted:', isBlacklisted); // Debug log
             if (callback) callback(isBlacklisted);
         });
     }
