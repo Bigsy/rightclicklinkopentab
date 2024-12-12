@@ -1,5 +1,4 @@
 'use strict';
-console.log('Content script loaded.');
 
 /**
  * Content script injected into all pages

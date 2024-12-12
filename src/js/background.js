@@ -1,12 +1,5 @@
 'use strict';
 
-'use strict';
-
-console.log('Background script loaded.');
-
-// ... rest of your background script ...
-
-
 function shouldTabBeActive(info, next) {
     var defaultSettings = {
         'link-right-click': 'back',
@@ -77,7 +70,6 @@ function openLink(info, from, next) {
     return true;
 };
 function setActiveTabAndWindow(activeTab) {
-    console.log('setActiveTabAndWindow');
     chrome.storage.sync.set({
         increment: 0,
         activeTabId: activeTab.tabId,
