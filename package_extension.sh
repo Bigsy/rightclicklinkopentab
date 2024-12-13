@@ -17,6 +17,7 @@ cd src && zip -r ../extension.zip \
     config/ \
     css/ \
     icons/ \
+    images/ \
     img/ \
     js/ \
     -x "*.DS_Store" \
