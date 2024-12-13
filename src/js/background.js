@@ -21,8 +21,6 @@ function getActiveTab(next) {
 };
 
 function openLink(info, from, next) {
-    console.log('openLink');
-
     shouldTabBeActive(info, function(err, isActive) {
         if (info.button == 'left') {
             if (isActive)
