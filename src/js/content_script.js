@@ -10,6 +10,7 @@
     var mouseDownTimer;
     var forceLeftClickSameTab;
     var isBlacklisted = false;
+    var recentRequests = new Map(); // Track recent URL requests to prevent duplicates
 
     function checkBlacklist(callback) {
         const defaultSettings = { 'blacklisted-domains': '' };
@@ -119,10 +120,31 @@
         if (!(ev.currentTarget && ev.currentTarget.href))
             return;
 
+        // Prevent duplicate tab opening by checking recent requests
+        const url = ev.currentTarget.href;
+        const now = Date.now();
+        const recentKey = `${url}_${clickedButton}`;
+        
+        if (recentRequests.has(recentKey)) {
+            const lastRequest = recentRequests.get(recentKey);
+            if (now - lastRequest < 500) { // 500ms debounce window
+                return; // Skip duplicate request
+            }
+        }
+        
+        recentRequests.set(recentKey, now);
+        
+        // Clean up old entries (older than 1 second)
+        for (const [key, timestamp] of recentRequests.entries()) {
+            if (now - timestamp > 1000) {
+                recentRequests.delete(key);
+            }
+        }
+
         ev.preventDefault();
 
         chrome.runtime.sendMessage({
-            url: ev.currentTarget.href,
+            url: url,
             button: clickedButton
         });
     };
