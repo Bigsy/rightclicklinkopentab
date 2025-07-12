@@ -1,5 +1,5 @@
 {
-    "manifest_version": 3,
+    "manifest_version": 2,
     "name": "Right Click Opens Link New Tab",
     "version": "0.0.7",
     "description": "Right Click Opens Link in New Tab in the Correct Order",
@@ -10,9 +10,15 @@
         "128": "icons/128.png"
     },
     "author": "Bill Hedworth",
-    "minimum_chrome_version": "88",
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "rightclicklinkopentab@hedworth.com",
+            "strict_min_version": "88.0"
+        }
+    },
     "background": {
-        "service_worker": "js/background.js"
+        "scripts": ["js/background.js"],
+        "persistent": true
     },
     "content_scripts": [{
         "matches": [
@@ -25,8 +31,10 @@
         "all_frames": true
     }],
     "permissions": [
-        "storage"],
-    "action": {
+        "storage",
+        "tabs"
+    ],
+    "browser_action": {
         "default_popup": "config/settings.html",
         "default_icon": {
             "16": "icons/16.png",
@@ -41,4 +49,3 @@
     },
     "short_name": "Tab Opener"
 }
-

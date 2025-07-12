@@ -1,0 +1,74 @@
+body {
+    background-color: #f1f1f1;
+    line-height: 1.5em;
+    color: #3b3b3b;
+}
+
+a,
+a:visited,
+a:active,
+a:link,
+a:hover {
+    color: #2196f3;
+}
+
+div.container {
+    max-width: 700px;
+    margin: auto;
+    background-color: #fff;
+    box-shadow: 0px 2px 5px 0px rgba(50, 50, 50, 0.75);
+    padding: 20px;
+}
+
+div.container > div.header {
+    min-height: 128px;
+}
+
+div.header div.branding>div {
+    float: left;
+}
+
+div.header div.branding div.icon {
+    width: 128px;
+    height: 128px;
+    background-image: url('../icons/128.png');
+}
+
+div.header div.branding div.caption h3 {
+    margin-top: 40px;
+    margin-bottom: 10px;
+}
+
+h4 {
+    margin-top: 4px;
+    margin-bottom: 10px;
+}
+
+div.header div.branding div.caption h4 {
+    text-align: center;
+}
+
+div.header div.branding div.caption > * {
+    margin-left: 50px;
+}
+
+div.indent.one {
+    padding: 0 20px;
+}
+
+div.settings > div {
+    padding-bottom: 10px;
+}
+
+div.settings > div:last-child {
+    padding-bottom: 0;
+}
+
+div.container > div {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+div.container > div:last-child {
+    border-bottom: none;
+}
