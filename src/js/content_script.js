@@ -79,6 +79,13 @@
         }
         if (forceLeftClickSameTab === undefined) {
             return chrome.runtime.sendMessage({ button: 'left' }, function(persistTab) {
+                // Check if there was an error (service worker might be unresponsive)
+                if (chrome.runtime.lastError) {
+                    console.warn('Extension service worker unresponsive:', chrome.runtime.lastError);
+                    // Try to reconnect by resetting the cached value
+                    forceLeftClickSameTab = undefined;
+                    return next && next(false);
+                }
                 forceLeftClickSameTab = persistTab;
                 return next && next(forceLeftClickSameTab);
             });
@@ -146,6 +153,13 @@
         chrome.runtime.sendMessage({
             url: url,
             button: clickedButton
+        }, function(response) {
+            // Check if there was an error (service worker might be unresponsive)
+            if (chrome.runtime.lastError) {
+                console.warn('Failed to open link, service worker unresponsive:', chrome.runtime.lastError);
+                // Reset cached value to force reconnection attempt
+                forceLeftClickSameTab = undefined;
+            }
         });
     };
 

@@ -75,6 +75,9 @@ function setActiveTabAndWindow(activeTab) {
     });
 };
 
-chrome.runtime.onMessage.addListener(openLink);
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    openLink(request, sender, sendResponse);
+    return true; // Keep message channel open for async response
+});
 chrome.tabs.onActivated.addListener(setActiveTabAndWindow)
 
