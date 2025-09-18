@@ -3,7 +3,9 @@
 function shouldTabBeActive(info, next) {
     var defaultSettings = {
         'link-right-click': 'back',
-        'link-left-click-prevent-new-tab': false
+        'link-left-click-prevent-new-tab': false,
+        'list-mode': 'blacklist',
+        'domain-list': ''
     };
 
     chrome.storage.sync.get(defaultSettings, function(settings) {
@@ -80,4 +82,3 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true; // Keep message channel open for async response
 });
 chrome.tabs.onActivated.addListener(setActiveTabAndWindow)
-

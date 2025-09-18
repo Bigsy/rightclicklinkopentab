@@ -12,16 +12,31 @@
     var isBlacklisted = false;
     var recentRequests = new Map(); // Track recent URL requests to prevent duplicates
 
-    function checkBlacklist(callback) {
-        const defaultSettings = { 'blacklisted-domains': '' };
+    function checkDomainList(callback) {
+        const defaultSettings = { 
+            'list-mode': 'blacklist', 
+            'domain-list': '',
+            // Legacy support
+            'blacklisted-domains': ''
+        };
+        
         chrome.storage.sync.get(defaultSettings, function(settings) {
-            const blacklist = settings['blacklisted-domains'].split('\n')
+            // Handle legacy migration
+            let domainList = settings['domain-list'];
+            let listMode = settings['list-mode'];
+            
+            if (!domainList && settings['blacklisted-domains']) {
+                domainList = settings['blacklisted-domains'];
+                listMode = 'blacklist';
+            }
+            
+            const domains = domainList.split('\n')
                 .map(domain => domain.trim())
                 .filter(domain => domain);
             
             const currentDomain = window.location.hostname;
             
-            isBlacklisted = blacklist.some(pattern => {
+            const domainMatches = domains.some(pattern => {
                 if (pattern.startsWith('*')) {
                     // Remove the * and handle both with and without leading dot
                     const suffix = pattern.slice(1);
@@ -33,6 +48,12 @@
                 const match = pattern === currentDomain;
                 return match;
             });
+            
+            // Logic: 
+            // - Blacklist mode: disable extension if domain matches (isBlacklisted = domainMatches)
+            // - Whitelist mode: disable extension if domain doesn't match (isBlacklisted = !domainMatches)
+            isBlacklisted = listMode === 'blacklist' ? domainMatches : !domainMatches;
+            
             if (callback) callback(isBlacklisted);
         });
     }
@@ -163,18 +184,18 @@
         });
     };
 
-    // Check blacklist first, then initialize extension
-    checkBlacklist((blacklisted) => {
+    // Check domain list first, then initialize extension
+    checkDomainList((blacklisted) => {
         if (!blacklisted) {
             persistTabOnLeftClick();
             setupMutationHelpers(onMouseDown, onMouseUp, onContextMenu);
         }
     });
 
-    // Listen for blacklist changes
+    // Listen for domain list changes
     chrome.storage.onChanged.addListener((changes, namespace) => {
-        if (namespace === 'sync' && changes['blacklisted-domains']) {
-            checkBlacklist();
+        if (namespace === 'sync' && (changes['domain-list'] || changes['list-mode'] || changes['blacklisted-domains'])) {
+            checkDomainList();
         }
     });
 })();
